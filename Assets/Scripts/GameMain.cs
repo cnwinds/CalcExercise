@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 enum CalcMode {
@@ -19,9 +20,11 @@ public class GameMain : MonoBehaviour {
 	private string inputAnswer;
 	private Examine examine;
 
-	// Use this for initialization
-	void Start () {
-		Report.gameObject.SetActive (false);
+    public object SceneManger { get; private set; }
+
+    // Use this for initialization
+    void Start () {
+        Report.gameObject.SetActive (false);
 
 		examine = new Examine ();
 		examine.InitExamine (3);
@@ -76,6 +79,7 @@ public class GameMain : MonoBehaviour {
 
 	public void OnPressClose() {
 		Report.gameObject.SetActive (false);
+        SceneManager.LoadScene("Menu");
 	}
 
 	public void OnPressRetry() {
@@ -102,7 +106,9 @@ public class GameMain : MonoBehaviour {
 		useTime.text = string.Format("{0:F1}秒", examine.elapseSeconds);
 		ReTryButton.gameObject.SetActive (examine.correctAnswerCount != examine.totalQuestionCount);
 
-		Report.gameObject.SetActive (true);
+        RankManager.AddExamine(examine);
+        RankManager.Save();
+        Report.gameObject.SetActive (true);
 	}
 
 	void ShowReReport() {

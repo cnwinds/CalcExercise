@@ -122,4 +122,32 @@ class Examine {
 		}
 	}
 
+    public string Rate()
+    {
+        double score = Score();
+        if (score > 99.99999)
+            return "A+++";
+        else if (score > 99.00)
+            return "A++";
+        else if (score > 95.00)
+            return "A+";
+        else if (score > 90)
+            return "A";
+        else if (score > 80)
+            return "B";
+        else if (score > 70)
+            return "C";
+        else if (score > 60)
+            return "D";
+        else if (score > 50)
+            return "E";
+        else
+            return "F";
+    }
+
+    public double Score()
+    {
+        return Mathf.RoundToInt((correctAnswerCount / totalQuestionCount) * 10000) / 100.0f;
+    }
+
 };
