@@ -27,7 +27,7 @@ public class GameMain : MonoBehaviour {
         Report.gameObject.SetActive (false);
 
 		examine = new Examine ();
-		examine.InitExamine (3);
+		examine.InitExamine (20);
 		examine.StartExamine ();
 
 		examine.NextQuestion ();
