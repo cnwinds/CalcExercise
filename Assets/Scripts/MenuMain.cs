@@ -2,26 +2,39 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class MenuMain : MonoBehaviour {
+public class MenuMain : MonoBehaviour
+{
+	public bool isNewExceise;
 
 	// Use this for initialization
-	void Start () {
-        RankManager.Load();
-        WrongManager.Load();
-    }
-	
-	// Update is called once per frame
-	void Update () {
-	
+	void Start ()
+	{
+		Object.DontDestroyOnLoad (this);
+
+		MenuMain[] list = FindObjectsOfType<MenuMain> ();
+		if (list.Length > 1) {
+			Destroy (list[0]);
+			return;
+		}
+
+		RankManager.Load ();
+		WrongManager.Load ();
 	}
 
-    public void OnNormalExceise()
-    {
-        SceneManager.LoadScene("Level0");
-    }
+	public void OnNewExceise ()
+	{
+		isNewExceise = true;
+		SceneManager.LoadScene ("Level0");
+	}
+		
+	public void OnRank ()
+	{
+		SceneManager.LoadScene ("Rank");
+	}
 
-    public void OnRank()
-    {
-        SceneManager.LoadScene("Rank");
-    }
+	public void OnWrongExceise ()
+	{
+		isNewExceise = false;
+		SceneManager.LoadScene ("Level0");
+	}
 }

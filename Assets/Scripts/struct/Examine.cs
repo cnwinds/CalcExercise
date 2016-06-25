@@ -4,18 +4,19 @@ using ProtoBuf;
 using System.Collections.Generic;
 
 [ProtoContract]
-class Examine {
-	[ProtoMember(1)]
+public class Examine
+{
+	[ProtoMember (1)]
 	public int totalQuestionCount;
-	[ProtoMember(2)]
+	[ProtoMember (2)]
 	public int correctAnswerCount;
-	[ProtoMember(3)]
+	[ProtoMember (3)]
 	public double elapseSeconds;
-	[ProtoMember(4)]
+	[ProtoMember (4)]
 	public System.DateTime startTime;
-	[ProtoMember(5)]
+	[ProtoMember (5)]
 	public System.DateTime endTime;
-	[ProtoMember(6)]
+	[ProtoMember (6)]
 	public List<Question> currentQuests;
 
 	public bool isErrorQuestionMode;
@@ -24,7 +25,26 @@ class Examine {
 	private System.DateTime end;
 	private bool isFirstNext;
 
-	public void InitExamine(int total) {
+
+	public void InitExamineWithWrongQuestion (int total)
+	{
+		isErrorQuestionMode = true;
+
+		if (currentQuests == null) {
+			currentQuests = new List<Question> ();
+		} else {
+			currentQuests.Clear ();
+		}
+
+		List<Question> result = WrongManager.TakeQuestion (total);
+
+		totalQuestionCount = result.Count;
+
+		currentQuests.AddRange (result);
+	}
+		
+	public void InitExamine (int total)
+	{
 		isErrorQuestionMode = false;
 
 		if (currentQuests == null) {
@@ -41,7 +61,8 @@ class Examine {
 		}
 	}
 
-	public void InitExamine(Examine examine, bool isErrorQuestion) {
+	public void InitExamine (Examine examine, bool isErrorQuestion)
+	{
 		isErrorQuestionMode = isErrorQuestion;
 
 		if (currentQuests == null) {
@@ -64,38 +85,45 @@ class Examine {
 		}
 	}
 
-	void StartElapseTime() {
+	void StartElapseTime ()
+	{
 		elapseSeconds = 0;
 		start = System.DateTime.Now;
 		//InvokeRepeating ("UpdateElapseTime", 1, 1);
 	}
 
-	void UpdateElapseTime() {
+	void UpdateElapseTime ()
+	{
 		elapseSeconds = (int)((System.DateTime.Now - start).TotalSeconds);
 	}
 
-	void StopElapseTime() {
+	void StopElapseTime ()
+	{
 		end = System.DateTime.Now;
 		startTime = start;
 		endTime = end;
 		elapseSeconds = (end - start).TotalSeconds;
 	}
 
-	public double GetCurrentElapseTime() {
+	public double GetCurrentElapseTime ()
+	{
 		return (System.DateTime.Now - start).TotalSeconds;
 	}
 
-	public void StartExamine() {
+	public void StartExamine ()
+	{
 		isFirstNext = true;
 		doneQuestionCount = 0;
 		StartElapseTime ();
 	}
 
-	public Question GetQuestion() {
+	public Question GetQuestion ()
+	{
 		return currentQuests [doneQuestionCount];
 	}
 
-	public bool NextQuestion() {
+	public bool NextQuestion ()
+	{
 		if (doneQuestionCount >= totalQuestionCount) {
 			return false;
 		}
@@ -114,40 +142,46 @@ class Examine {
 		}
 	}
 
-	public void SetAnswer(int answer) {
+	public void SetAnswer (int answer)
+	{
 		Question q = GetQuestion ();
 		q.SetAnswer (answer);
-		if (q.IsUserAnswerCorrect()) {
+		if (q.IsUserAnswerCorrect ()) {
 			correctAnswerCount++;
 		}
 	}
 
-    public string Rate()
-    {
-        double score = Score();
-        if (score > 99.99999)
-            return "A+++";
-        else if (score > 99.00)
-            return "A++";
-        else if (score > 95.00)
-            return "A+";
-        else if (score > 90)
-            return "A";
-        else if (score > 80)
-            return "B";
-        else if (score > 70)
-            return "C";
-        else if (score > 60)
-            return "D";
-        else if (score > 50)
-            return "E";
-        else
-            return "F";
-    }
+	public string Rate ()
+	{
+		double score = Score ();
+		if (score > 99.99999)
+			return "A+++";
+		else if (score > 99.00)
+			return "A++";
+		else if (score > 95.00)
+			return "A+";
+		else if (score > 90)
+			return "A";
+		else if (score > 80)
+			return "B";
+		else if (score > 70)
+			return "C";
+		else if (score > 60)
+			return "D";
+		else if (score > 50)
+			return "E";
+		else
+			return "F";
+	}
 
-    public double Score()
-    {
-        return Mathf.RoundToInt((correctAnswerCount / totalQuestionCount) * 10000) / 100.0f;
-    }
+	public double Score ()
+	{
+		return Mathf.RoundToInt ((correctAnswerCount / totalQuestionCount) * 10000) / 100.0f;
+	}
+
+	public double ElapseSeconds ()
+	{
+		return Mathf.RoundToInt ((float)(elapseSeconds * 10)) / 10.0f;
+	}
 
 };
