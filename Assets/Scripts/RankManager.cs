@@ -35,7 +35,7 @@ class RankManager
 		// 根据正确率排名次
 		bool hasInsert = false;
 		for (int i = 0; i < rank.examineList.Count; i++) {
-			if (examine.Score () > rank.examineList [i].Score ()) {
+			if (examine.ElapseSeconds() < rank.examineList[i].ElapseSeconds()) {
 				rank.examineList.Insert (i, examine);
 				hasInsert = true;
 				break;
